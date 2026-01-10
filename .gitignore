@@ -1,3 +1,9 @@
 video_api
+instance
+__pychache__
 static
 *.env
+*.cpython
+*.pyc
+logs.txt
+do_som.py
