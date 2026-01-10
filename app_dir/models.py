@@ -52,4 +52,9 @@ class User(BaseModel):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-    
+class Media(BaseModel):
+
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, default=None)
+    photo = db.Column(db.String(200), default=None)
+    video = db.Column(db.String(200), default=None)

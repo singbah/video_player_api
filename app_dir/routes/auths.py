@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import datetime, os
 from app_dir.models import *
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
-from uuid import uuid4
+
 
 
 
@@ -37,7 +37,7 @@ def register():
 
         filename = f"{time_stamp}_{filename}"
 
-        upload_folder = os.path.join(UPLOAD_FOLDERS, 'uploads')
+        upload_folder = os.path.join(UPLOAD_FOLDERS)
         os.makedirs(upload_folder, exist_ok=True)
 
         file_path = os.path.join(upload_folder, filename)
@@ -73,7 +73,7 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if not user or not  user.check_password(password):
-        return json_err({"error":"Wrong Credentials"}, 404)
+        return json_err({"error":"Wrong Credentials"}, 400)
     
     access_token = create_access_token(str(user.id))
     refresh_token = create_refresh_token(str(user.id))
@@ -83,4 +83,6 @@ def login():
 @auth_bp.route("/forgot_password", methods=['POST'])
 def forgot_password():
     pass
+
+
 

@@ -35,10 +35,10 @@ def json_ok(payload, code=200):
 
     return jsonify(payload), code
 
-def json_err(payload:dict, code=400):
+def json_err(payload, code=400):
     if not payload:
         payload = {}
-    payload['error'] = "An error occur"
+    payload['msg'] = "An error occur"
     return jsonify(payload), code
 
 def create_app():
