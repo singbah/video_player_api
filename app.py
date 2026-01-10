@@ -1,7 +1,6 @@
 from app_dir import db, create_app, UPLOAD_FOLDERS, json_ok
 from flask import send_file
 import os, datetime
-from app_dir.models import AddUser
 
 app = create_app()
 

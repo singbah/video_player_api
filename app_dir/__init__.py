@@ -6,23 +6,18 @@ import datetime, os, json, logging
 from pathlib import Path
 from dotenv import load_dotenv
 import logging
+from flask_mail import Mail
 from logging.handlers import RotatingFileHandler
+from uuid import uuid4
 
 load_dotenv()
 db = SQLAlchemy()
 cors = CORS()
+jwt = JWTManager()
+mail = Mail()
 
-def setup_logging(app):
-    formatter = logging.Formatter(
-        "[%(asctime)s] %(levelname)s: %(message)s"
-    )
-    handler = RotatingFileHandler("app.log", maxBytes=10_000_000, backupCount=5)
-    handler.setFormatter(formatter)
-    handler.setLevel(logging.INFO)
-
-    app.logger.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
-
+def create_token(length=6):
+    return uuid4().hex[0:length]
 
 ALLOWED_EXTENSTIONS = {"mp4", "mp3", "png", "jpeg", "jpg"}
 UPLOAD_FOLDERS = os.path.join(os.getcwd(), "static", "uploads")
@@ -31,7 +26,6 @@ os.makedirs(UPLOAD_FOLDERS, exist_ok=True)
 
 def check_extenstions(filename):
     return "." in filename and filename.rsplit(".", 1)[1] in ALLOWED_EXTENSTIONS
-
 
 def json_ok(payload, code=200):
     if not payload:
@@ -60,10 +54,13 @@ def create_app():
         MAX_CONTENT_LENGTH = MAX_FILE_LENGTH
     )
     
-    setup_logging(app)
-
     cors.init_app(app)
     db.init_app(app)
+    jwt.init_app(app)
+    mail.init_app(app)
     
-
+    from app_dir.routes import all_bps
+    for bp in all_bps:
+        app.register_blueprint(bp)
+    
     return app
