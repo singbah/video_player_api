@@ -19,13 +19,16 @@ def add_media():
     try:
         title = request.form.get("title")
         content = request.form.get("content")
-        photo = request.form.get("photo")
+        photo = request.files.get("photo")
         video = request.files.get("video")
     except Exception as e:
         return json_err({"error":str(e)})
     
-    if not all([title, photo, video]):
+    if not all([title, video]):
         return json_err({"error":"These Are Required"}, 400)
+    
+    if not check_extenstions(video.filename) or not secure_filename(video.filename):
+        return json_err({"error":"Extension not allow"})
     
     if video and check_extenstions(video.filename):
         filename = secure_filename(video.filename)
@@ -33,7 +36,39 @@ def add_media():
 
         filename = f"{time_stamp}_{filename}"
 
-        upload_folder = os.path.join(UPLOAD_FOLDERS, "videos")
+        upload_folder = os.path.join(UPLOAD_FOLDERS)
         os.makedirs(upload_folder, exist_ok=True)
 
+        file_path = os.path.join(upload_folder, filename)
+        video.save(file_path)
+
+        relative_path = f"/uploads/{filename}"
+    else:
+        relative_path = None
+
+    if photo and check_extenstions(photo.filename):
+        filename = secure_filename(photo.filename)
+        time_stamp = datetime.datetime.utcnow().strftime("%d%m%Y%H%M%S")
+
+        filename = f"{time_stamp}_{filename}"
+
+        upload_folder = os.path.join(UPLOAD_FOLDERS)
+        os.makedirs(upload_folder, exist_ok=True)
+
+        file_path = os.path.join(upload_folder, filename)
+        photo.save(file_path)
+
+        photo_path = f"/uploads/{filename}"
+    else:
+        photo_path = None
     
+    new_media = Media(
+        title=title,
+        content=content,
+        video=relative_path,
+        photo=photo_path
+        )
+
+    new_media.save()
+    return json_ok({"media":new_media.to_dict()})
+

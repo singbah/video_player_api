@@ -6,7 +6,7 @@ app = create_app()
 
 @app.route("/uploads/<filename>")
 def get_file(filename):
-    return send_file(f"/{UPLOAD_FOLDERS}/{filename}")
+    return send_file(f"{UPLOAD_FOLDERS}/{filename}")
 
 
 if __name__=="__main__":

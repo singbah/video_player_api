@@ -51,7 +51,7 @@ def create_app():
         JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(hours=5),
         JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(days=30),
         UPLOAD_FOLDER=UPLOAD_FOLDERS,
-        MAX_CONTENT_LENGTH = MAX_FILE_LENGTH
+        # MAX_CONTENT_LENGTH = MAX_FILE_LENGTH
     )
     
     cors.init_app(app)
