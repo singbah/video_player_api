@@ -38,13 +38,16 @@ class BaseModel(db.Model):
         
 
 class User(BaseModel):
+    __tablename__ = 'users'
 
     username = db.Column(db.String(200), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(200), nullable=False)
     password = db.Column(db.String(200), nullable=False)
     profile_photo = db.Column(db.String(250), default=None)
+    reset_code = db.Column(db.String(6), default=None)
 
+    medias = db.relationship("Media", backref="user", lazy=True)
     
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -53,8 +56,10 @@ class User(BaseModel):
         return check_password_hash(self.password, password)
     
 class Media(BaseModel):
-
+    __tablename__ = "medias"
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, default=None)
     photo = db.Column(db.String(200), default=None)
     video = db.Column(db.String(200), default=None)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    

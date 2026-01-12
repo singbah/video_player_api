@@ -39,6 +39,7 @@ def json_err(payload, code=400):
     if not payload:
         payload = {}
     payload['msg'] = "An error occur"
+    payload['time_stamp'] =  datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
     return jsonify(payload), code
 
 def create_app():

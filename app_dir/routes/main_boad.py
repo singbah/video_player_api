@@ -72,3 +72,17 @@ def add_media():
     new_media.save()
     return json_ok({"media":new_media.to_dict()})
 
+@main_bp.route("/find_videos", methods=['GET'])
+def find_videos():
+    try:
+        title = request.args.get("title")
+    except Exception as e:
+        return json_err({"error":str(e)})
+    
+    videos = Media.query.all()
+
+    all_videos = [video.to_dict() for video in videos]
+    results = [v for v in all_videos if v.get("title") == title]
+
+    return json_ok({"result":results}, 200)
+
