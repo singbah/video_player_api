@@ -17,6 +17,7 @@ def main_dashboard():
 @jwt_required()
 def add_media():
     try:
+        user_id = int(get_jwt_identity())
         title = request.form.get("title")
         content = request.form.get("content")
         photo = request.files.get("photo")
@@ -26,6 +27,10 @@ def add_media():
     
     if not all([title, video]):
         return json_err({"error":"These Are Required"}, 400)
+    
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return json_err({"error":"User Id Error"}, 400)
     
     if not check_extenstions(video.filename) or not secure_filename(video.filename):
         return json_err({"error":"Extension not allow"})
@@ -63,6 +68,7 @@ def add_media():
         photo_path = None
     
     new_media = Media(
+        user_id=user.id,
         title=title,
         content=content,
         video=relative_path,

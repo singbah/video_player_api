@@ -14,6 +14,7 @@ auth_bp = Blueprint("auths", __name__, url_prefix="/auths")
 def register():
     try:
         username = request.form.get("username")
+        phone = request.form.get("phone")
         age = request.form.get("age")
         email = request.form.get("email")
         password = request.form.get("password")
@@ -21,7 +22,7 @@ def register():
     except Exception as e:
         return json_err({"error":str(e)})
     
-    if not all([username, age, email, password]):
+    if not all([username, age, email, password, phone]):
         return json_err({"error":"All fields are Required"}, 400)
 
     existing_user = User.query.filter_by(email=email).first()
@@ -47,6 +48,7 @@ def register():
 
     new_user = User(
         username=username,
+        phone=phone,
         age=age,
         email=email,
         profile_photo=relative_path

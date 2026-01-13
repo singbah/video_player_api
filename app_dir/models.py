@@ -43,6 +43,7 @@ class User(BaseModel):
     username = db.Column(db.String(200), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(200), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
     password = db.Column(db.String(200), nullable=False)
     profile_photo = db.Column(db.String(250), default=None)
     reset_code = db.Column(db.String(6), default=None)
@@ -62,4 +63,6 @@ class Media(BaseModel):
     photo = db.Column(db.String(200), default=None)
     video = db.Column(db.String(200), default=None)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    
+
     
