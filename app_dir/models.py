@@ -41,14 +41,15 @@ class User(BaseModel):
     __tablename__ = 'users'
 
     username = db.Column(db.String(200), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
+    birth_date = db.Column(db.DateTime, nullable=False)
     email = db.Column(db.String(200), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     password = db.Column(db.String(200), nullable=False)
     profile_photo = db.Column(db.String(250), default=None)
-    reset_code = db.Column(db.String(6), default=None)
+    password_try = db.Column(db.Integer, default=0)
+    try_start_time = db.Column(db.DateTime, default=None)
+    try_end_time = db.Column(db.DateTime, default=None)
 
-    medias = db.relationship("Media", backref="user", lazy=True)
     
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -59,10 +60,12 @@ class User(BaseModel):
 class Media(BaseModel):
     __tablename__ = "medias"
     title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.Text, default=None)
-    photo = db.Column(db.String(200), default=None)
     video = db.Column(db.String(200), default=None)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     
-
+class OTP(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    otp_code = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_time_stamp())
+    expired_at = db.Column(db.DateTime, default=None)
     

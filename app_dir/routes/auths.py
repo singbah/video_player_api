@@ -161,14 +161,19 @@ def refresh_user():
     
     user = User.query.filter_by(id=user_id).first()
 
+    user_media = Media.query.filter_by(user_id=user_id).all()
+
     if not user:
         return json_err({"error":"Please Login again"})
+    
+    user_info = user.to_dict()
+    user_info["user_media"] = [u_media.to_dict() for u_media in user_media]
 
     access_token = create_access_token(str(user.id))
     refresh_token = create_refresh_token(str(user.id))
 
     return json_ok({
-        "user":user.to_dict(),
+        "user":user_info,
         "access_token":access_token,
-        "refresh_token":refresh_token
+        "refresh_token":refresh_token,
     })
